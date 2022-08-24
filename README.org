@@ -1,0 +1,50 @@
+#+title: README.org
+* USDA Food Central DataBase
+
+  The USDA maintains a database of nutritional information, where
+  different kinds of food are identified by an FDC number.  They do
+  not provide any data on prices.
+
+  To look up nutritional information, use api provided by the USDA at
+  https://fdc.nal.usda.gov/.   You should sign up for a
+  free api key (see directions on page), then add that key here in
+  place of "DEMO_KEY".
+
+#+begin_src ipython :session :tangle diet_problem.py :results silent
+apikey = "DEMO_KEY"  # Replace with a real key!  "DEMO_KEY" will be slow...
+#+end_src
+
+** Looking up foods
+
+I've written a little module =fooddatacentral= with the methods
+   - =search=
+   - =nutrients=
+   - =units=
+
+** FDC Search
+Here's a little code to help look up FDC codes for foods of
+different descriptions.
+
+#+begin_src ipython :results output :session
+import fooddatacentral as fdc
+
+fdc.search(apikey,"crunchy peanut butter")
+#+end_src
+
+
+** FDC Nutrients
+
+Once we know the =fdc_id= of a particular food we can look up a
+variety of information on it.  We start with nutrients
+#+begin_src ipython :results output :session
+id =     # Put an FDC ID HERE!
+fdc.nutrients(apikey,fdc_id=id)
+#+end_src
+
+** FDC Ingredients
+
+We can also look up the ingredients for many foods in the FDC:
+#+begin_src ipython
+
+fdc.ingredients(apikey,id)
+#+end_src
