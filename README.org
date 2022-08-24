@@ -1,4 +1,3 @@
-#+title: README.org
 * USDA Food Central DataBase
 
   The USDA maintains a database of nutritional information, where
