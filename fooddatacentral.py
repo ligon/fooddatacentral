@@ -7,7 +7,7 @@ ureg = UnitRegistry()
 ureg.load_definitions('./Data/food_units.txt') 
 import numpy as np
 
-# See https://fdc.nal.usda.gov/api-guide.html for API documentation
+# See https://fdc.nal.usda.gov/api-key-signup.html for API key
 
 import requests
 
