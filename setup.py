@@ -5,10 +5,10 @@ README_MD = open(join(dirname(abspath(__file__)), "README.md")).read()
 
 setup(
     name="fooddatacentral",
-    version="1.0.2",
+    version="1.0.4",
     packages=find_packages(exclude="tests"),
 
-    description="Python code to obtain information from the USDA's Food Data Central data project.",
+    description="Python module to obtain information from the USDA's Food Data Central data project.",
     long_description=README_MD,
     long_description_content_type="text/markdown",
 

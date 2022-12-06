@@ -1,4 +1,4 @@
-
+# FoodDataCentral
 [![DOI](https://zenodo.org/badge/238808020.svg)](https://zenodo.org/badge/latestdoi/238808020)
 
 The USDA maintains a database of nutritional information, where
@@ -51,7 +51,7 @@ variety of information on it.  We start with nutrients
 
 # FDC Ingredients
 
-We can also look up the ingredients for many foods in the FDC:
+We can also look up the ingredients for many foods (specifically Survey Foods) in the FDC:
 
     
     fdc.ingredients(apikey,id)

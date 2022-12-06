@@ -43,7 +43,7 @@ fdc.nutrients(apikey,fdc_id=id)
 
 ** FDC Ingredients
 
-We can also look up the ingredients for many foods in the FDC:
+We can also look up the ingredients for many foods (specifically Survey Foods) in the FDC:
 #+begin_src ipython
 
 fdc.ingredients(apikey,id)
