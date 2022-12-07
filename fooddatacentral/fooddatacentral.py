@@ -24,7 +24,7 @@ home = os.path.expanduser('~')
 unit = '.unitsrc'
 try:
     ureg.load_definitions(os.path.join(home, unit))
-except IOError:
+except (IOError, ValueError):
     pass 
 import numpy as np
 
