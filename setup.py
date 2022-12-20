@@ -5,7 +5,7 @@ README_MD = open(join(dirname(abspath(__file__)), "README.md")).read()
 
 setup(
     name="fooddatacentral",
-    version="1.0.6",
+    version="1.0.7",
     packages=find_packages(exclude="tests"),
 
     description="Python module to obtain information from the USDA's Food Data Central data project.",
@@ -16,12 +16,11 @@ setup(
 
     author_name="Ethan Ligon",
     author_email="ligon@berkeley.edu",
-
+    license = "Creative Commons Attribution-NonCommercial-ShareAlike 4.0. http://creativecommons.org/licenses/by-nc-sa/4.0/",
     classifiers=[
-        "License :: OSI Approved :: MIT License",
         "Intended Audience :: Developers",
         "Programming Language :: Python :: 3 :: Only"
     ],
 
-    keywords="USDA, FDC",
+    keywords="USDA, FDC"
 )
