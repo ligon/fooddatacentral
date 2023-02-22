@@ -1,20 +1,25 @@
 from urllib.request import Request, urlopen
 import pandas as pd
 import json
+from json import JSONDecodeError
 import warnings
-from pint import UnitRegistry, UndefinedUnitError, DimensionalityError
-import os 
-ureg = UnitRegistry()
-home = os.path.expanduser('~')
-unit = '.unitsrc'
-try:
-    ureg.load_definitions(os.path.join(home, unit))
-except (IOError, ValueError):
-    pass 
+import os
 import numpy as np
-
-
 import requests
+from pint import UnitRegistry, UndefinedUnitError, DimensionalityError
+
+ureg = UnitRegistry()
+
+home = os.path.expanduser('~')
+unitrc = ('unitsrc',os.path.join(home,'.unitsrc'))
+
+for fn in unitrc:
+    try:
+        ureg.load_definitions(fn)
+        break
+    except (IOError, ValueError):
+        pass
+
 
 def search(apikey, term, url = 'https://api.nal.usda.gov/fdc/v1/search'):
     """
