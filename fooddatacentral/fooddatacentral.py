@@ -6,6 +6,7 @@ import warnings
 import os
 import numpy as np
 import requests
+from functools import lru_cache
 from pint import UnitRegistry, UndefinedUnitError, DimensionalityError
 
 ureg = UnitRegistry()
@@ -21,6 +22,7 @@ for fn in unitrc:
         pass
 
 
+@lru_cache(maxsize=256)
 def search(apikey, term, url = 'https://api.nal.usda.gov/fdc/v1/search'):
     """
     Search Food Central Database, using apikey and "term" as search criterion.
@@ -40,15 +42,22 @@ def search(apikey, term, url = 'https://api.nal.usda.gov/fdc/v1/search'):
     """
     parms = (('format', 'json'),('generalSearchInput', term),('api_key', apikey))
     r = requests.get(url, params = parms)
+    if r.status_code == 200:
+        if 'foods' in r.json():
+            l = r.json()['foods']
 
-    if 'foods' in r.json():
-        l = r.json()['foods']
+        elif r.status_code == 404:
+            warnings.warn("Couldn't find {term}.")
+        else:
+            warnings.warn("Some problem with request: %s" % str(r))
+            return []
     else:
         return []
 
     return pd.DataFrame(l)
 
-def nutrients(apikey, fdc_id, url = 'https://api.nal.usda.gov/fdc/v1/food/'):
+@lru_cache(maxsize=256)
+def nutrients(apikey, fdc_id, url = 'https://api.nal.usda.gov/fdc/v1/food/',verbose=False):
     """
     Construct a food report for food with given fdc_id; nutrients are given per 100 g or 100 ml of the food.
     
@@ -69,9 +78,16 @@ def nutrients(apikey, fdc_id, url = 'https://api.nal.usda.gov/fdc/v1/food/'):
     try:
         r = requests.get(url+"%s" % fdc_id, params = params)
 
-        L = r.json()['foodNutrients']
+        if r.status_code == 200:
+            L = r.json()['foodNutrients']
+        elif r.status_code == 404:
+            warnings.warn("Couldn't find fdc_id=%s." % fdc_id)
+            return None
+        else:
+            warnings.warn("Some problem with request: %s" % str(r))
+            return None
+        if verbose: print(r.header)
     except KeyError:
-        warnings.warn("Couldn't find fdc_id=%s." % fdc_id)
         return None
 
     v = {}
@@ -102,6 +118,7 @@ def units(q,u,ureg=ureg):
     except DimensionalityError:
         return x.to(ureg.deciliter)
 
+@lru_cache(maxsize=256)
 def ingredients(apikey, fdc_id, url = 'https://api.nal.usda.gov/fdc/v1/food/'):
     """
     Given fdc_id of a Survey Food, return ingredients of food.
@@ -123,7 +140,13 @@ def ingredients(apikey, fdc_id, url = 'https://api.nal.usda.gov/fdc/v1/food/'):
     try:
         r = requests.get(url+"%s" % fdc_id, params = params)
 
-        L = r.json()['inputFoods']
+        if r.status_code == 200:
+            L = r.json()['inputFoods']
+        elif r.status_code == 404:
+            warnings.warn("Couldn't find fdc_id=%s." % fdc_id)
+        else:
+            warnings.warn("Some problem with request: %s" % str(r))
+            return None
     except KeyError:
         warnings.warn("Make sure it's a Survey Food (FNDDS); couldn't find fdc_id=%s." % fdc_id)
         return None
