@@ -23,7 +23,7 @@ for fn in unitrc:
 
 
 @lru_cache(maxsize=256)
-def search(apikey, term, url = 'https://api.nal.usda.gov/fdc/v1/search'):
+def search(apikey, term, url = 'https://api.nal.usda.gov/fdc/v1/search',num_results=50):
     """
     Search Food Central Database, using apikey and "term" as search criterion.
     
@@ -35,12 +35,14 @@ def search(apikey, term, url = 'https://api.nal.usda.gov/fdc/v1/search'):
         A string of the food name, or a specific FDC ID in int format
     url : str
         default = 'https://api.nal.usda.gov/fdc/v1/search'
+    pageSize : int
+        Number of results to return per page.  Default is 50.
 
     Returns
     -------
         a pd.DataFrame of matches.
     """
-    parms = (('format', 'json'),('generalSearchInput', term),('api_key', apikey))
+    parms = (('format', 'json'),('generalSearchInput', term),('api_key', apikey),('pageSize',num_results))
     r = requests.get(url, params = parms)
     if r.status_code == 200:
         if 'foods' in r.json():
