@@ -47,13 +47,14 @@ def search(apikey, term, url = 'https://api.nal.usda.gov/fdc/v1/search',num_resu
     if r.status_code == 200:
         if 'foods' in r.json():
             l = r.json()['foods']
-
-        elif r.status_code == 404:
-            warnings.warn("Couldn't find {term}.")
         else:
-            warnings.warn("Some problem with request: %s" % str(r))
+            warnings.warn("No foods found for '%s'." % term)
             return []
+    elif r.status_code == 404:
+        warnings.warn("Couldn't find %s." % term)
+        return []
     else:
+        warnings.warn("Some problem with request: %s" % str(r))
         return []
 
     return pd.DataFrame(l)
