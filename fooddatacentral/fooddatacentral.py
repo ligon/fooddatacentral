@@ -113,7 +113,7 @@ def units(q,u,ureg=ureg):
     try:
         x = ureg.Quantity(float(q),u)
     except UndefinedUnitError:
-        return ureg.Quantity(np.NaN,'ml')
+        return ureg.Quantity(np.nan,'ml')
 
     try:
         return x.to(ureg.hectogram)
