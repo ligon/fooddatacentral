@@ -5,3 +5,6 @@ dist/
 fooddatacentral.egg-info/
 ven
 venv
+
+# Python/build artifacts
+.venv/
