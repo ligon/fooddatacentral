@@ -1,0 +1,43 @@
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "fooddatacentral"
+version = "1.0.12"
+description = "Python module to obtain information from the USDA's Food Data Central data project."
+authors = ["Ethan Ligon <ligon@berkeley.edu>"]
+license = "CC-BY-NC-SA-4.0"
+readme = "README.md"
+homepage = "https://github.com/ligon/fooddatacentral"
+repository = "https://github.com/ligon/fooddatacentral"
+keywords = ["USDA", "FDC"]
+classifiers = [
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3 :: Only",
+]
+packages = [{include = "fooddatacentral"}]
+
+[tool.poetry.dependencies]
+python = ">=3.9,<4.0"
+pandas = ">=1.0"
+numpy = ">=1.20"
+requests = ">=2.20"
+pint = ">=0.17"
+
+[tool.poetry.group.dev.dependencies]
+pytest = ">=7.0"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+target-version = "py39"
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+
+[tool.black]
+target-version = ["py39"]
+line-length = 120
