@@ -1,19 +1,30 @@
-# This CITATION.cff file was generated with cffinit.
-# Visit https://bit.ly/cffinit to generate yours today!
-
 cff-version: 1.2.0
-title: fooddatacentral
 message: >-
-  If you use this software, please cite it using the
-  metadata from this file.
+  If you use this software, please cite it using the metadata from this file.
 type: software
-authors:
-  - given-names: Ethan
-    family-names: Ligon
-    email: ligon@berkeley.edu
-    affiliation: 'University of California, Berkeley'
-    orcid: 'https://orcid.org/0000-0003-4928-0616'
 title: "fooddatacentral"
+abstract: >-
+  A Python module for obtaining information from the United States Department
+  of Agriculture's Food Data Central database, which identifies foods by FDC
+  number and reports their nutritional composition.  The module wraps the USDA
+  API, handling lookup of foods by name or FDC identifier and returning
+  nutritional information in a form convenient for analysis with pandas.
+authors:
+  - family-names: Ligon
+    given-names: Ethan
+    email: ligon@berkeley.edu
+    affiliation: "University of California, Berkeley"
+    orcid: "https://orcid.org/0000-0003-4928-0616"
+repository-code: "https://github.com/ligon/fooddatacentral"
+url: "https://github.com/ligon/fooddatacentral"
+license: CC-BY-NC-SA-4.0
 version: 0.2
-doi:10.5281/zenodo.7020171
-date-released: 2022-08-11
+doi: 10.5281/zenodo.7020171
+date-released: "2022-08-11"
+keywords:
+  - nutrition
+  - food composition
+  - USDA
+  - Food Data Central
+  - food policy
+  - agricultural economics

@@ -1,0 +1,23 @@
+{
+  "upload_type": "software",
+  "title": "fooddatacentral: a Python interface to the USDA Food Data Central database",
+  "creators": [
+    {
+      "name": "Ligon, Ethan",
+      "affiliation": "University of California, Berkeley",
+      "orcid": "0000-0003-4928-0616"
+    }
+  ],
+  "description": "<p>A Python module for obtaining information from the United States Department of Agriculture's Food Data Central database, which identifies foods by FDC number and reports their nutritional composition. The module wraps the USDA API (<a href=\"https://fdc.nal.usda.gov/\">fdc.nal.usda.gov</a>), handling lookup of foods by name or FDC identifier and returning nutritional information in a form convenient for analysis with pandas.</p><p>The USDA database reports nutritional composition but no prices; this module is intended for use alongside price data in demand and nutrition analysis.</p>",
+  "license": "cc-by-nc-sa-4.0",
+  "access_right": "open",
+  "keywords": [
+    "nutrition",
+    "food composition",
+    "USDA",
+    "Food Data Central",
+    "food policy",
+    "agricultural economics",
+    "Python"
+  ]
+}
