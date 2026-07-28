@@ -1,5 +1,5 @@
 # FoodDataCentral
-[![DOI](https://zenodo.org/badge/238808020.svg)](https://zenodo.org/badge/latestdoi/238808020)
+[![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.7020171-blue.svg)](https://doi.org/10.5281/zenodo.7020171)
 
 The USDA maintains a database of nutritional information, where
 different kinds of food are identified by an FDC number.  They do
