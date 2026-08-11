@@ -1,5 +1,8 @@
+
+
 # FoodDataCentral
-[![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.7020171-blue.svg)](https://doi.org/10.5281/zenodo.7020171)
+
+[![img](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.7020171-blue.svg)](https://doi.org/10.5281/zenodo.7020171)
 
 The USDA maintains a database of nutritional information, where
 different kinds of food are identified by an FDC number.  They do
@@ -8,27 +11,23 @@ not provide any data on prices.
 To look up nutritional information, use api provided by the USDA at
 <https://fdc.nal.usda.gov/>.   You should sign up for a
 free api key (see directions on page), then add that key here in
-place of &ldquo;DEMO<sub>KEY</sub>&rdquo;.
+place of "DEMO\_KEY".
 
     apikey = "DEMO_KEY"  # Replace with a real key!  "DEMO_KEY" will be slow...
 
 
-<a id="org0a001b6"></a>
+## Looking up foods
 
-# Looking up foods
-
-I&rsquo;ve written a little module `fooddatacentral` with the methods
+I've written a little module `fooddatacentral` with the methods
 
 -   `search`
 -   `nutrients`
 -   `units`
 
 
-<a id="org24e646d"></a>
+## FDC Search
 
-# FDC Search
-
-Here&rsquo;s a little code to help look up FDC codes for foods of
+Here's a little code to help look up FDC codes for foods of
 different descriptions.
 
     import fooddatacentral as fdc
@@ -36,9 +35,7 @@ different descriptions.
     fdc.search(apikey,"crunchy peanut butter")
 
 
-<a id="org4e9bac2"></a>
-
-# FDC Nutrients
+## FDC Nutrients
 
 Once we know the `fdc_id` of a particular food we can look up a
 variety of information on it.  We start with nutrients
@@ -47,9 +44,7 @@ variety of information on it.  We start with nutrients
     fdc.nutrients(apikey,fdc_id=id)
 
 
-<a id="org7462d48"></a>
-
-# FDC Ingredients
+## FDC Ingredients
 
 We can also look up the ingredients for many foods (specifically Survey Foods) in the FDC:
 

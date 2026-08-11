@@ -1,3 +1,4 @@
+#+OPTIONS: ^:nil
 * FoodDataCentral
 [[https://doi.org/10.5281/zenodo.7020171][https://img.shields.io/badge/DOI-10.5281%2Fzenodo.7020171-blue.svg]]
 
