@@ -13,7 +13,7 @@ EMACS ?= emacs
 # --eval is passed through to Emacs literally and breaks the form.
 EXPORT_MD = (progn (require (quote org)) (require (quote ox-md)) (setq make-backup-files nil org-export-with-toc nil) (find-file "$(1)") (org-md-export-to-markdown))
 
-.PHONY: all readme readme-check
+.PHONY: all readme readme-check release
 
 all: readme
 
@@ -38,3 +38,9 @@ readme-check:
 	  echo "README.md is STALE; run 'make readme'."; \
 	  diff -u $$here/README.md $$tmp/README.md | head -40; rm -rf $$tmp; exit 1; \
 	fi
+
+# Tag and publish a release of the version in pyproject.toml; publishing the
+# GitHub release uploads it to PyPI.  `make release DRY_RUN=1` only checks.
+# See scripts/release.sh.
+release:
+	@scripts/release.sh
