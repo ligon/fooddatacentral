@@ -6,7 +6,7 @@ import warnings
 import os
 import numpy as np
 import requests
-from functools import lru_cache
+from functools import lru_cache, wraps
 from pint import UnitRegistry, UndefinedUnitError, DimensionalityError
 
 ureg = UnitRegistry()
@@ -22,7 +22,39 @@ for fn in unitrc:
         pass
 
 
-@lru_cache(maxsize=256)
+class _Failed(Exception):
+    """A lookup failed: warn with the message and return value instead."""
+    def __init__(self, message, value=None):
+        super().__init__(message)
+        self.value = value
+
+
+def _cached(fn):
+    """
+    Cache fn like lru_cache, but don't cache failures and don't share results.
+
+    fn raises _Failed rather than returning a failure, so a transient
+    error is retried on the next call instead of being remembered.
+    Callers get a copy of each cached result, so changing it doesn't
+    change what later calls return.
+    """
+    cached = lru_cache(maxsize=256)(fn)
+
+    @wraps(fn)
+    def wrapper(*args, **kwargs):
+        try:
+            result = cached(*args, **kwargs)
+        except _Failed as e:
+            warnings.warn(str(e))
+            return e.value
+        return result.copy() if result is not None else None
+
+    wrapper.cache_info = cached.cache_info
+    wrapper.cache_clear = cached.cache_clear
+    return wrapper
+
+
+@_cached
 def search(apikey, term, url = 'https://api.nal.usda.gov/fdc/v1/search',num_results=50):
     """
     Search Food Central Database, using apikey and "term" as search criterion.
@@ -40,7 +72,7 @@ def search(apikey, term, url = 'https://api.nal.usda.gov/fdc/v1/search',num_resu
 
     Returns
     -------
-        a pd.DataFrame of matches.
+        a pd.DataFrame of matches; empty if there are none or the request fails.
     """
     parms = (('format', 'json'),('generalSearchInput', term),('api_key', apikey),('pageSize',num_results))
     r = requests.get(url, params = parms)
@@ -48,18 +80,15 @@ def search(apikey, term, url = 'https://api.nal.usda.gov/fdc/v1/search',num_resu
         if 'foods' in r.json():
             l = r.json()['foods']
         else:
-            warnings.warn("No foods found for '%s'." % term)
-            return []
+            raise _Failed("No foods found for '%s'." % term, pd.DataFrame())
     elif r.status_code == 404:
-        warnings.warn("Couldn't find %s." % term)
-        return []
+        raise _Failed("Couldn't find %s." % term, pd.DataFrame())
     else:
-        warnings.warn("Some problem with request: %s" % str(r))
-        return []
+        raise _Failed("Some problem with request: %s" % str(r), pd.DataFrame())
 
     return pd.DataFrame(l)
 
-@lru_cache(maxsize=256)
+@_cached
 def nutrients(apikey, fdc_id, url = 'https://api.nal.usda.gov/fdc/v1/food/',verbose=False):
     """
     Construct a food report for food with given fdc_id; nutrients are given per 100 g or 100 ml of the food.
@@ -84,14 +113,12 @@ def nutrients(apikey, fdc_id, url = 'https://api.nal.usda.gov/fdc/v1/food/',verb
         if r.status_code == 200:
             L = r.json()['foodNutrients']
         elif r.status_code == 404:
-            warnings.warn("Couldn't find fdc_id=%s." % fdc_id)
-            return None
+            raise _Failed("Couldn't find fdc_id=%s." % fdc_id)
         else:
-            warnings.warn("Some problem with request: %s" % str(r))
-            return None
+            raise _Failed("Some problem with request: %s" % str(r))
         if verbose: print(r.headers)
     except KeyError:
-        return None
+        raise _Failed("No nutrient data for fdc_id=%s." % fdc_id)
 
     v = {}
     u = {}
@@ -121,7 +148,7 @@ def units(q,u,ureg=ureg):
     except DimensionalityError:
         return x.to(ureg.deciliter)
 
-@lru_cache(maxsize=256)
+@_cached
 def ingredients(apikey, fdc_id, url = 'https://api.nal.usda.gov/fdc/v1/food/'):
     """
     Given fdc_id of a Survey Food, return ingredients of food.
@@ -146,14 +173,11 @@ def ingredients(apikey, fdc_id, url = 'https://api.nal.usda.gov/fdc/v1/food/'):
         if r.status_code == 200:
             L = r.json()['inputFoods']
         elif r.status_code == 404:
-            warnings.warn("Couldn't find fdc_id=%s." % fdc_id)
-            return None
+            raise _Failed("Couldn't find fdc_id=%s." % fdc_id)
         else:
-            warnings.warn("Some problem with request: %s" % str(r))
-            return None
+            raise _Failed("Some problem with request: %s" % str(r))
     except KeyError:
-        warnings.warn("Make sure it's a Survey Food (FNDDS); couldn't find fdc_id=%s." % fdc_id)
-        return None
+        raise _Failed("Make sure it's a Survey Food (FNDDS); couldn't find fdc_id=%s." % fdc_id)
     if L == [] and r.json()['dataType']== 'SR Legacy':
         warnings.warn("No ingredients data for this SR Legacy food fdc_id=%s; " % fdc_id)
         return L
