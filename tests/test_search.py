@@ -1,7 +1,6 @@
 from fooddatacentral import search
 import pandas as pd 
 import unittest
-from warnings import warn 
 
 apikey = "kY45fKdbAFHas9GpxBKlDyEYbwvfC00z17oKd3ba"
 
@@ -10,8 +9,7 @@ class TestSearch(unittest.TestCase):
         """
         Test that it returns an empty df for an illogical food input
         """
-        actual = search(apikey,"avocao")
-        warn('Invalid term; check spelling of food names or digits of food code')
+        actual = search(apikey,"xqzzvbnmk")  # FDC search is fuzzy, so a near-miss like "avocao" still matches
         self.assertTrue(actual.empty)	
 
     def test_string(self):
@@ -29,7 +27,7 @@ class TestSearch(unittest.TestCase):
         """
         expected = 'oil, avocado'
         actual = search(apikey,173573)
-        lst = actual['lowercaseDescription'].tolist()
+        lst = actual['description'].str.lower().tolist()
         self.assertTrue(expected in lst)	
 
 if __name__ == '__main__':

@@ -26,6 +26,7 @@ class TestIngredients(unittest.TestCase):
         expect = []
         self.assertEqual(expect, actual)
         
+        ingredients.cache_clear()  # A cached call returns without warning
         warnings.simplefilter("always")
         with warnings.catch_warnings(record=True) as w:
             ingredients(apikey, 173889)

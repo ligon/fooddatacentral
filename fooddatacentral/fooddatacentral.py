@@ -89,7 +89,7 @@ def nutrients(apikey, fdc_id, url = 'https://api.nal.usda.gov/fdc/v1/food/',verb
         else:
             warnings.warn("Some problem with request: %s" % str(r))
             return None
-        if verbose: print(r.header)
+        if verbose: print(r.headers)
     except KeyError:
         return None
 
@@ -147,6 +147,7 @@ def ingredients(apikey, fdc_id, url = 'https://api.nal.usda.gov/fdc/v1/food/'):
             L = r.json()['inputFoods']
         elif r.status_code == 404:
             warnings.warn("Couldn't find fdc_id=%s." % fdc_id)
+            return None
         else:
             warnings.warn("Some problem with request: %s" % str(r))
             return None
