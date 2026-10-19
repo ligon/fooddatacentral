@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "fooddatacentral"
-version = "1.0.13"
+version = "1.1.0"
 description = "Python module to obtain information from the USDA's Food Data Central data project."
 authors = ["Ethan Ligon <ligon@berkeley.edu>"]
 license = "CC-BY-NC-SA-4.0"
