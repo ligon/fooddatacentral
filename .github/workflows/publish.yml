@@ -1,0 +1,79 @@
+# Publish to PyPI when a GitHub release is published.
+#
+# Uses PyPI trusted publishing (OIDC), so no API token is stored here.  PyPI
+# must list this repository, this workflow file (publish.yml) and the
+# environment "pypi" as a trusted publisher for fooddatacentral.
+#
+# The release tag must be v<version>, matching `version` in pyproject.toml.
+# To publish a tag that predates this workflow, run it by hand
+# (workflow_dispatch) and name the tag.
+
+name: Publish to PyPI
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag to build and publish (e.g. v1.0.13)"
+        required: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.tag_name || inputs.tag }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Check tag matches package version
+        env:
+          TAG: ${{ github.event.release.tag_name || inputs.tag }}
+        run: |
+          version=$(python -c "import tomllib; print(tomllib.load(open('pyproject.toml','rb'))['tool']['poetry']['version'])")
+          if [ "$TAG" != "v$version" ]; then
+            echo "::error::Tag $TAG does not match pyproject.toml version $version"
+            exit 1
+          fi
+
+      - name: Build sdist and wheel
+        run: |
+          python -m pip install --upgrade build
+          python -m build
+
+      - name: Check the wheel ships only the fooddatacentral package
+        run: |
+          python - <<'EOF'
+          import glob, sys, zipfile
+          (whl,) = glob.glob("dist/*.whl")
+          tops = {n.split("/")[0] for n in zipfile.ZipFile(whl).namelist()}
+          extra = {t for t in tops if t != "fooddatacentral" and not t.endswith(".dist-info")}
+          if extra:
+              sys.exit(f"Unexpected top-level entries in {whl}: {sorted(extra)}")
+          EOF
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/project/fooddatacentral/
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - uses: pypa/gh-action-pypi-publish@release/v1
