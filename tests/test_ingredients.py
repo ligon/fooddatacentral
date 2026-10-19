@@ -1,10 +1,12 @@
+import os
 from fooddatacentral import ingredients
 import pandas as pd 
 import unittest, warnings
 
 
-apikey = "kY45fKdbAFHas9GpxBKlDyEYbwvfC00z17oKd3ba"
+apikey = os.environ.get("FDC_API_KEY")
 
+@unittest.skipUnless(apikey, "set FDC_API_KEY to test against the USDA API")
 class TestIngredients(unittest.TestCase):
     def test_warn1(self):
         """

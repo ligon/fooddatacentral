@@ -1,15 +1,20 @@
+import os
 from fooddatacentral import search
 import pandas as pd 
-import unittest
+import unittest, warnings
 
-apikey = "kY45fKdbAFHas9GpxBKlDyEYbwvfC00z17oKd3ba"
+apikey = os.environ.get("FDC_API_KEY")
 
+@unittest.skipUnless(apikey, "set FDC_API_KEY to test against the USDA API")
 class TestSearch(unittest.TestCase):
     def test_reasonable(self):
         """
         Test that it returns an empty df for an illogical food input
         """
-        actual = search(apikey,"xqzzvbnmk")  # FDC search is fuzzy, so a near-miss like "avocao" still matches
+        with warnings.catch_warnings(record=True) as w:
+            warnings.simplefilter("always")
+            actual = search(apikey,"xqzzvbnmk")  # FDC search is fuzzy, so a near-miss like "avocao" still matches
+        self.assertEqual(len(w), 0)  # An empty result from a failed request doesn't count
         self.assertTrue(actual.empty)	
 
     def test_string(self):

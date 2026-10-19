@@ -1,9 +1,11 @@
+import os
 from fooddatacentral import nutrients
 import pandas as pd 
 import unittest
 
-apikey = "kY45fKdbAFHas9GpxBKlDyEYbwvfC00z17oKd3ba"
+apikey = os.environ.get("FDC_API_KEY")
 
+@unittest.skipUnless(apikey, "set FDC_API_KEY to test against the USDA API")
 class TestNutrients(unittest.TestCase):
     def test_column(self):
         """

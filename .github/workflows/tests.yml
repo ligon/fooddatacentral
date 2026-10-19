@@ -1,0 +1,40 @@
+# Run the test suite.
+#
+# Most tests call the live USDA FDC API using the repository secret
+# FDC_API_KEY; without it (e.g. on pull requests from forks) they are
+# skipped.  The weekly run catches changes in the API itself.
+
+name: Tests
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+  schedule:
+    - cron: "17 6 * * 1"  # Mondays, 06:17 UTC
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.14"]
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install
+        run: |
+          pipx install poetry
+          poetry env use python
+          poetry install --with dev
+
+      - name: Test
+        env:
+          FDC_API_KEY: ${{ secrets.FDC_API_KEY }}
+        run: poetry run pytest -v
