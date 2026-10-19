@@ -18,9 +18,9 @@ authors:
 repository-code: "https://github.com/ligon/fooddatacentral"
 url: "https://github.com/ligon/fooddatacentral"
 license: CC-BY-NC-SA-4.0
-version: 0.2
+version: 1.0.13
 doi: 10.5281/zenodo.7020171
-date-released: "2022-08-11"
+date-released: "2026-10-19"
 keywords:
   - nutrition
   - food composition
