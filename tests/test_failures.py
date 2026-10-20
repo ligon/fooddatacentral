@@ -61,7 +61,8 @@ class TestFailures(unittest.TestCase):
         Test that changing a returned DataFrame doesn't change later results
         """
         with mock.patch('requests.get', return_value=response(200, FOOD)):
-            nutrients('key', 1).loc['Protein', 'Quantity'] = 99
+            first = nutrients('key', 1)
+            first.loc['Protein', 'Quantity'] = 99
             self.assertEqual(nutrients('key', 1).loc['Protein', 'Quantity'], 2.0)
 
 if __name__ == '__main__':
