@@ -22,6 +22,7 @@ I've written a little module `fooddatacentral` with the methods
 
 -   `search`
 -   `nutrients`
+-   `ingredients`
 -   `units`
 
 

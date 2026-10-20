@@ -6,7 +6,7 @@
 # release triggers .github/workflows/publish.yml, which uploads to PyPI.
 #
 # Bump the version first (e.g. `poetry version minor`, plus the version in
-# CITATION.cff), commit, and push.  Then:
+# CITATION.cff), commit, push, and wait for the Tests workflow to pass.  Then:
 #
 #   make release                       # release it
 #   make release DRY_RUN=1             # run the checks, change nothing
@@ -44,7 +44,11 @@ if curl -sf -o /dev/null "https://pypi.org/pypi/fooddatacentral/$version/json"; 
 fi
 grep -qx "version: $version" CITATION.cff || die "CITATION.cff version is not $version"
 
-# The release is sound
+# The release is sound.  Locally the live API tests skip without
+# FDC_API_KEY, so also require CI (which has the key) to have passed.
+ci=$(gh run list --workflow tests.yml --commit "$(git rev-parse HEAD)" -L 1 --json status,conclusion \
+     --jq '.[0] | if . == null then "none" elif .status != "completed" then "running" else .conclusion end')
+[ "$ci" = success ] || die "CI tests for HEAD: $ci (need success; see gh run list --workflow tests.yml)"
 make -s readme-check
 poetry run pytest -q
 

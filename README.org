@@ -20,6 +20,7 @@ apikey = "DEMO_KEY"  # Replace with a real key!  "DEMO_KEY" will be slow...
 I've written a little module =fooddatacentral= with the methods
    - =search=
    - =nutrients=
+   - =ingredients=
    - =units=
 
 ** FDC Search
